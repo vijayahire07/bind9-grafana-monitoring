@@ -54,3 +54,13 @@ WantedBy=multi-user.target
 EOF
 
 ----------------------------
+
+sudo systemctl daemon-reload
+sudo systemctl restart bind_exporter.service
+sudo systemctl enable bind_exporter.service
+systemctl status bind_exporter.service
+
+When Prometheus data source has been added, import Bind Grafana Dashboard by navigating to Dashboard > Import. Use 12309 for Grafana Dashboard ID.
+
+
+
