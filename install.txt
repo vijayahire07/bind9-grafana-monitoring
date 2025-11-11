@@ -1,7 +1,11 @@
+Install Grafana
 wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
 
-sudo apt update
 sudo apt install wget apt-transport-https software-properties-common -y
+apt update
+
+echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+apt update
 
 sudo apt update
 sudo apt install grafana -y
@@ -9,20 +13,16 @@ sudo apt install grafana -y
 systemctl enable grafana-server
 systemctl start grafana-server
 
+Install Prometheus
 apt install prometheus
 
-
-apt update
-echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
-apt update
-
+Install Prometheus
 curl -s https://api.github.com/repos/prometheus-community/bind_exporter/releases/latest | grep browser_download_url | grep linux-amd64 |  cut -d '"' -f 4 | wget -qi -
 tar xvf bind_exporter*.tar.gz
 sudo mv bind_exporter-*/bind_exporter /usr/local/bin
 bind_exporter --version
 
-apt install prometheus
-
+create a new service file.
 ----------------------------
 sudo tee /etc/systemd/system/bind_exporter.service<<EOF
 [Unit]
@@ -50,7 +50,6 @@ Restart=always
 [Install]
 WantedBy=multi-user.target
 EOF
-
 ----------------------------
 
 sudo systemctl daemon-reload
@@ -58,7 +57,10 @@ sudo systemctl restart bind_exporter.service
 sudo systemctl enable bind_exporter.service
 systemctl status bind_exporter.service
 
-When Prometheus data source has been added, import Bind Grafana Dashboard by navigating to Dashboard > Import. Use 12309 for Grafana Dashboard ID.
+Once all services starts normally then open http:xx.xx.xx.xx:3000 grafana host and enter with admin admin default username and password.
+Go to Home-->Connections-->add data sources--> Select Prometheus. 
+import Bind Grafana Dashboard by navigating to Dashboard > Import. Use 12309 for Grafana Dashboard ID. voila you should see all Bind9 queries dashboard apearing in dashboard.
+
 
 
 
